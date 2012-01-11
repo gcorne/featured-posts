@@ -24,8 +24,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 */
 
-
-
+/**
+ * Enqueue scripts on the post editor screens.
+ *
+ * @param string $hook_suffix
+ */
 function bu_featured_admin_scripts($hook_suffix) {
 
     if(!in_array($hook_suffix, array('post.php', 'post-new.php'))) return;
@@ -55,6 +58,12 @@ function bu_feature_add_meta_box($post_type, $post) {
 
 add_action('add_meta_boxes', 'bu_feature_add_meta_box', 10, 2);
 
+
+/**
+ * Render admin meta boxd.
+ * @param object $post
+ * @param array $box (unused)
+ */
 function bu_feature_meta_box($post, $box) {
 	$feature = get_post_meta($post->ID, '_bu_feature', true);
 
@@ -64,6 +73,13 @@ function bu_feature_meta_box($post, $box) {
 	include('interface/meta-box.php');
 }
 
+/**
+ * Filter handler that appends the feature, if there is one, to the end
+ * of the content.
+ *
+ * @param string $content
+ * @return string
+ */
 function bu_feature_content_filter($content) {
 
 	$feature = get_post_meta(get_the_ID(), '_bu_feature', true);
@@ -80,7 +96,12 @@ function bu_feature_content_filter($content) {
 
 add_filter('the_content', 'bu_feature_content_filter', 10, 1);
 
-
+/**
+ * Save feature when the post is saved.
+ *
+ * @param int $post_id
+ * @param object $post
+ */
 function bu_feature_save_post_handler($post_id, $post) {
 
 	if ((defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) || (defined('DOING_AJAX') && DOING_AJAX)) {
@@ -108,10 +129,9 @@ add_action('save_post', 'bu_feature_save_post_handler', 10, 2);
 
 
 /**
+ * Add custom ajax action that provides a mechanism for finding a post.
  *
- * @todo feature image
- *
- *
+ * @todo Add feature image
  */
 function bu_ajax_get_posts() {
 	global $post;
